@@ -1,0 +1,22 @@
+name: Windows RustDesk RDP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 9999
+
+    steps:
+    - name: Download RustDesk
+      run: |
+        Invoke-WebRequest https://github.com/rustdesk/rustdesk/releases/download/1.4.6/rustdesk-1.4.6-x86_64.exe -OutFile rustdesk.exe
+
+    - name: Run RustDesk
+      run: |
+        start rustdesk.exe
+
+    - name: Keep Alive
+      run: |
+        while ($true) { Start-Sleep -Seconds 60 }
