@@ -1,4 +1,4 @@
-name: Windows RustDesk RDP
+name: Windows 10 RustDesk RDP
 
 on:
   workflow_dispatch:
@@ -6,17 +6,31 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-   
+    timeout-minutes: 360
 
     steps:
     - name: Download RustDesk
       run: |
-        Invoke-WebRequest https://github.com/rustdesk/rustdesk/releases/download/1.4.6/rustdesk-1.4.6-x86_64.exe -OutFile rustdesk.exe
+        Invoke-WebRequest https://github.com/rustdesk/rustdesk/releases/download/1.2.3/rustdesk-1.2.3-x86_64.exe -OutFile rustdesk.exe
 
-    - name: Run RustDesk
+    - name: Install RustDesk
       run: |
-        start rustdesk.exe
+        Start-Process rustdesk.exe -ArgumentList "--silent-install" -Wait
+
+    - name: Start RustDesk
+      run: |
+        Start-Process "C:\Program Files\RustDesk\rustdesk.exe"
+
+    - name: Set Password
+      run: |
+        Start-Sleep -Seconds 10
+        & "C:\Program Files\RustDesk\rustdesk.exe" --password YourPassword123
+
+    - name: Show RustDesk ID
+      run: |
+        Start-Sleep -Seconds 10
+        & "C:\Program Files\RustDesk\rustdesk.exe" --get-id
 
     - name: Keep Alive
       run: |
-        while ($true) { Start-Sleep -Seconds 60 }
+        Start-Sleep -Seconds 21600
